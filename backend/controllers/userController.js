@@ -7,7 +7,7 @@ import User from '../model/userModel.js'
 
 // @Desc - Get User Data
 // @Route - GET /api/user/profile
-// @Access - Public
+// @Access - Private
 export const getUser = asyncHandler(async (req, res) => {
     const user = await User.find()
 
@@ -19,19 +19,28 @@ export const getUser = asyncHandler(async (req, res) => {
 // @Route - POST /api/user/login
 // @Access - Public
 export const loginUser = asyncHandler(async (req, res) => {
+    const { email, password } = req.body
 
-    res.json("Login of User Credential.")
+    // Check se Existe o Email
+    const user = await User.findOne({ email })
 
-    if (!req.body.email || !req.body.password) {
+    // Check for Password with bcrypt compare() Inputed & DB exist.
+    if (user && (await bcrypt.compare(password, user.password))) {
+        res.json({
+            _id: user.id,
+            username: user.username,
+            email: user.email,
+            token: generateToken(user._id)
+        })
+    } else {
         res.status(400)
-        throw new Error("Please add a text field!")
+        throw new Error("Invalid Credentials.")
     }
-
 })
 
 // @Desc - Create new User
 // @Route - POST /api/user/register
-// @Access - Public
+// @Access - Public 
 export const registerUser = asyncHandler(async (req, res) => {
     // Busca no corpo(formulario) da requisicao
     const { username, email, password } = req.body
@@ -58,12 +67,13 @@ export const registerUser = asyncHandler(async (req, res) => {
         email,
         password: hashedPassword
     })
-
+    // Verifica se foi criado com status 201 senao dara Erro.
     if (user) {
         res.status(201).json({
             _id: user.id,
             username: user.username,
-            email: user.email
+            email: user.email,
+            token: generateToken(user._id)
         })
     } else {
         res.status(400)
@@ -105,3 +115,12 @@ export const deleteUser = asyncHandler(async (req, res) => {
     })
     res.status(200).json(removeUser)
 })  
+
+
+// Generate JWT
+
+const generateToken = (id) => {
+    return jwt.sign({ id }, process.env.JWT_SECRET, {
+        expiresIn: '30d',
+    })
+}
