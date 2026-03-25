@@ -1,9 +1,11 @@
 import express from 'express'
 import { registerUser, loginUser, deleteUser, getUser, updateUser } from '../controllers/userController.js'
 const router = express.Router()
+import protect from '../middleware/authMiddleware.js'
+
 
 // Buscar Dados do Usuario
-router.get('/getProfile', getUser)
+router.get('/getProfile', protect, getUser)
 
 // Logar com credenciais existentes
 router.post('/login', loginUser)
@@ -18,3 +20,6 @@ router.put('/:id', updateUser)
 router.delete('/:id', deleteUser)
 
 export default router
+
+
+

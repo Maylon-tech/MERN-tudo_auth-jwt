@@ -9,10 +9,14 @@ import User from '../model/userModel.js'
 // @Route - GET /api/user/profile
 // @Access - Private
 export const getUser = asyncHandler(async (req, res) => {
-    const user = await User.find()
+    const { _id, username, email } = await User.findById(req.user.id)
 
 
-    res.status(200).json(user)
+    res.status(200).json({
+        id: _id,
+        username,
+        email,
+    })
 })
 
 // @Desc - Authenticate a user
