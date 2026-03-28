@@ -9,15 +9,37 @@ import Task from '../model/taskModel.js'
 // @Route - GET /api/user/profile
 // @Access - Private
 export const getTask = asyncHandler(async (req, res) => {
-    // const { _id, username, email } = await Task.findById(req.user.id)
-    res.json("getting the task done")
 
+    const { title, category, description } = await Task.find()
+    const task = {
+        _id: req.task._id,
+        title: req.task.title,
+        category: req.task.category,
+        description: req.task.description
+    }
+    res.status(200).json(task)
 })
 
-
 export const setTask = asyncHandler(async (req, res) => {
-    // const { _id, username, email } = await Task.findById(req.user.id)
-    res.json("Creating the task")
+    const { title, category, description } = await Task.find()
+    
+    if (!req.body.title || !req.body.category || !req.body.description) {
+        res.status(400)
+        throw new Error("Please fill the input.")
+    }
+
+    const task = await Task.create({
+        title,
+        category,
+        description
+    })
+
+    res.status(201).json({
+        _id: task.id,
+        title: task.title,
+        category: task.category,
+        description:task.description
+    })
 
 })
 
