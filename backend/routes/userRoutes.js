@@ -1,11 +1,13 @@
 import express from 'express'
-import { registerUser, loginUser, deleteUser, getUser, updateUser } from '../controllers/userController.js'
+import { registerUser, loginUser, deleteUser, getUser, updateUser, getAllUsers } from '../controllers/userController.js'
 const router = express.Router()
 import protect from '../middleware/authMiddleware.js'
 
 
 // Buscar Dados do Usuario
 router.get('/getProfile', protect, getUser)
+
+router.get('/allUsers', protect, getAllUsers)
 
 // Logar com credenciais existentes
 router.post('/login', loginUser)

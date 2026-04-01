@@ -3,7 +3,6 @@ import { deleteTask, getTask, setTask, updateTask } from '../controllers/taskCon
 import protect from '../middleware/authMiddleware.js'
 
 const taskRouter = express.Router()
-// import protect from '../middleware/authMiddleware.js'
 
 taskRouter.get('/getTask', protect, getTask)
 
@@ -11,7 +10,7 @@ taskRouter.post('/setTask', protect, setTask)
 
 taskRouter.put('/updateTask', updateTask)
 
-taskRouter.delete('/remove', deleteTask)
+taskRouter.delete('/:id', deleteTask)
 
 export default taskRouter
 

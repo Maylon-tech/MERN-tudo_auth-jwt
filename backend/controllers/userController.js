@@ -5,6 +5,13 @@ import asyncHandler from 'express-async-handler'
 import User from '../model/userModel.js'
 
 
+export const getAllUsers = asyncHandler(async (req, res) => {
+    const allUsers = await User.find()
+    // const { _id, username, email } = await User.findById(req.user.id)
+
+    res.status(200).json(allUsers)
+})
+
 // @Desc - Get User Data
 // @Route - GET /api/user/profile
 // @Access - Private
