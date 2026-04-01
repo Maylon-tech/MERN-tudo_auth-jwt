@@ -1,23 +1,25 @@
-import jwt from 'jsonwebtoken'
-import bcrypt from 'bcryptjs'
-
 import asyncHandler from 'express-async-handler'
 import Task from '../model/taskModel.js'
-
+import User from '../model/userModel.js'
 
 // @Desc - Get User Data
 // @Route - GET /api/user/profile
 // @Access - Private
 export const getTask = asyncHandler(async (req, res) => {
+    const tasks = await Task.find()
 
-    const  { title, category, description } = await Task.find({ task: req.task.title })
+    // const task = await Task.find({
+    //     title: req.task.id,
+    //     category: req.task.category,
+    //     description: req.task.description,
+    // })
 
-    const task = {
-        title,
-        category,
-        description,
-    }
-    res.status(200).json({task, message: "done"})
+    // const task = {
+    //     title,
+    //     category,
+    //     description,
+    // }
+    res.status(200).json({tasks, message: "done"})
 })
 
 // @Desc - Create Task
@@ -44,22 +46,63 @@ export const setTask = asyncHandler(async (req, res) => {
         category: task.category,
         description:task.description
     })
-
 })
 
-
+// @Desc - Update Task
+// @Route - PUT /api/tasks/:id
+// @Access - Private
 export const updateTask = asyncHandler(async (req, res) => {
-
+    const task = await Task.findById(req.params.id)
     // Check for user
-    if (!user) {
+    if (!task) {
         res.status(401)
         throw new Error("User not found.!")
     }
-    // Make sure the logged in uyser matched the task data
- 
 
+    // Make sure the logged in user matched the task data
+    const user = await User.findById(req.user.id)
+    // Check for USer
+    if (!user) {
+        res.status(401)
+        throw new Error("User not found.")
+    }
+    // Make sure the logged in user matches the goal user
+    if (task.user.toString() !== user.id) {
+        res.status(401)
+        throw new Error("User not authorized.")
+    }
 
-    // const { _id, username, email } = await Task.findById(req.user.id)
-    res.json("Updating the task...")
+    const updateTask = await Task.findByIdAndUpdate(req.params.id, req.body, {
+        new: true,
+    })
+    res.status(200).json(updateTask)
+})
+
+// @Desc - Delete Task
+// @Route - DELETE /api/tasks/:id
+// @Access - Private
+export const deleteTask = asyncHandler(async (req, res) => {
+    const task = await Task.findById(req.params.id)
+
+    if (!task) {
+        res.status(401)
+        throw new Error("Task not found.!")
+    }
+
+    // Make sure the logged in user matched the task data
+    const user = await User.findById(req.user.id)
+    // Check for USer
+    if (!user) {
+        res.status(401)
+        throw new Error("User not found.")
+    }
+    // Make sure the logged in user matches the goal user
+    if (task.user.toString() !== user.id) {
+        res.status(401)
+        throw new Error("User not authorized.")
+    }
+
+    await task.remove()
+    res.status(200).json({ id: req.params.id })
 
 })
