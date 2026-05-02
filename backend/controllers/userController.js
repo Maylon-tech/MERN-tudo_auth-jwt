@@ -18,7 +18,6 @@ export const getAllUsers = asyncHandler(async (req, res) => {
 export const getUser = asyncHandler(async (req, res) => {
     const { _id, username, email } = await User.findById(req.user.id)
 
-
     res.status(200).json({
         id: _id,
         username,
@@ -52,7 +51,7 @@ export const loginUser = asyncHandler(async (req, res) => {
 // @Desc - Create new User
 // @Route - POST /api/user/register
 // @Access - Public 
-export const registerUser = asyncHandler(async (req, res) => {
+export const registerUser = asyncHandler(async (req, res) => { 
     // Busca no corpo(formulario) da requisicao
     const { username, email, password } = req.body
     // Verifica se o dado foi inputado pelo ususario.

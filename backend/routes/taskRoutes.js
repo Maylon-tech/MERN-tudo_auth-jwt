@@ -8,9 +8,9 @@ taskRouter.get('/getTask', protect, getTask)
 
 taskRouter.post('/setTask', protect, setTask)
 
-taskRouter.put('/updateTask', updateTask)
+taskRouter.put('/:id', protect, updateTask)
 
-taskRouter.delete('/:id', deleteTask)
+taskRouter.delete('/:id', protect, deleteTask)
 
 export default taskRouter
 

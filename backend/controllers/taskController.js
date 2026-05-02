@@ -6,7 +6,7 @@ import User from '../model/userModel.js'
 // @Route - GET /api/user/profile
 // @Access - Private
 export const getTask = asyncHandler(async (req, res) => {
-    const tasks = await Task.find()
+    const tasks = await Task.find({ user: req.user.id })
 
     // const task = await Task.find({
     //     title: req.task.id,
@@ -19,7 +19,7 @@ export const getTask = asyncHandler(async (req, res) => {
     //     category,
     //     description,
     // }
-    res.status(200).json({tasks, message: "done"})
+    res.status(200).json(tasks)
 })
 
 // @Desc - Create Task
@@ -34,18 +34,16 @@ export const setTask = asyncHandler(async (req, res) => {
         throw new Error("Please fill the input.")
     }
 
+    const user = await User.findById(req.user.id)
+
     const task = await Task.create({
-        title,
-        category,
-        description
+        title: req.body.title,
+        category: req.body.category,
+        description: req.body.description,
+        username: req.user.id
     })
 
-    res.status(201).json({
-        _id: task.id,
-        title: task.title,
-        category: task.category,
-        description:task.description
-    })
+    res.status(201).json(task)
 })
 
 // @Desc - Update Task
