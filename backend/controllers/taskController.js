@@ -2,6 +2,24 @@ import asyncHandler from 'express-async-handler'
 import Task from '../model/taskModel.js'
 import User from '../model/userModel.js'
 
+export const getAllTask = asyncHandler(async (req, res) => {
+    const allTasks = await Task.find()
+
+    // const task = await Task.find({
+    //     title: req.task.id,
+    //     category: req.task.category,
+    //     description: req.task.description,
+    // })
+
+    // const task = {
+    //     title,
+    //     category,
+    //     description,
+    // }
+    res.status(200).json(allTasks)
+})
+
+
 // @Desc - Get User Data
 // @Route - GET /api/user/profile
 // @Access - Private

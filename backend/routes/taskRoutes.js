@@ -1,8 +1,10 @@
 import express from 'express'
-import { deleteTask, getTask, setTask, updateTask } from '../controllers/taskController.js'
+import { deleteTask, getAllTask, getTask, setTask, updateTask } from '../controllers/taskController.js'
 import protect from '../middleware/authMiddleware.js'
 
 const taskRouter = express.Router()
+
+taskRouter.get("/allTasks", getAllTask)
 
 taskRouter.get('/getTask', protect, getTask)
 
