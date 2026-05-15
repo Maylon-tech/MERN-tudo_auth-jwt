@@ -44,15 +44,15 @@ export const getTask = asyncHandler(async (req, res) => {
 // @Route - POST /api/tasks/create
 // @Access - Private
 export const setTask = asyncHandler(async (req, res) => {
-    const { title, category, description } = req.body
+    // const { title, category, description } = req.body
     // const { title, category, description } = await Task.find()
     
     if (!req.body.title || !req.body.category || !req.body.description) {
         res.status(400)
-        throw new Error("Please fill the input.")
+        throw new Error("Please fill the field.")
     }
 
-    const user = await User.findById(req.user.id)
+    // const user = await User.findById(req.user.id)
 
     const task = await Task.create({
         title: req.body.title,
@@ -61,7 +61,7 @@ export const setTask = asyncHandler(async (req, res) => {
         username: req.user.id
     })
 
-    res.status(201).json(task)
+    res.status(200).json(task)
 })
 
 // @Desc - Update Task
@@ -69,10 +69,10 @@ export const setTask = asyncHandler(async (req, res) => {
 // @Access - Private
 export const updateTask = asyncHandler(async (req, res) => {
     const task = await Task.findById(req.params.id)
-    // Check for user
+    // Check for task
     if (!task) {
-        res.status(401)
-        throw new Error("User not found.!")
+        res.status(400)
+        throw new Error("Task not found.!")
     }
 
     // Make sure the logged in user matched the task data
